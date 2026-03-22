@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'add_vehicle_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+
+  await Hive.openBox('vehiclesBox');
+
   runApp(MyApp());
 }
 
@@ -18,11 +25,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Box box;
+
   // Step B2: Vehicle list (state)
   List<Map<String, String>> vehicles = [
     {'name': 'Toyota Camry', 'type': 'Car', 'price': '\$20000'},
     {'name': 'Honda Civic', 'type': 'Car', 'price': '\$18000'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    box = Hive.box('vehiclesBox');
+
+    final savedData = box.get('vehicles');
+
+    if (savedData != null) {
+      vehicles = List<Map<String, String>>.from(
+        (savedData as List).map((item) => Map<String, String>.from(item)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (updatedVehicle != null) {
                   setState(() {
                     vehicles[index] = Map<String, String>.from(updatedVehicle);
+                    box.put('vehicles', vehicles);
                   });
                 }
               },
@@ -62,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onLongPress: () {
                 setState(() {
                   vehicles.removeAt(index);
+                  box.put('vehicles', vehicles);
                 });
               },
             ),
@@ -81,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (result != null) {
             setState(() {
               vehicles.add(Map<String, String>.from(result));
+              box.put('vehicles', vehicles);
             });
           }
         },
