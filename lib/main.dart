@@ -60,36 +60,65 @@ class _HomeScreenState extends State<HomeScreen> {
           final v = vehicles[index];
 
           return Card(
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
 
-            child: ListTile(
-              title: Text(v['name']!),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 6),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blue.shade100,
+                  child: Icon(Icons.directions_car, color: Colors.blue),
+                ),
 
-              subtitle: Text('${v['type']} - ${v['price']}'),
+                title: Text(
+                  v['name']!,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
 
-              onTap: () async {
-                final updatedVehicle = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AddVehicleScreen(vehicle: vehicles[index]),
+                subtitle: Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Text(
+                    '${v['type']} • ${v['price']}',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                   ),
-                );
+                ),
 
-                if (updatedVehicle != null) {
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.grey,
+                ),
+
+                onTap: () async {
+                  final updatedVehicle = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddVehicleScreen(vehicle: vehicles[index]),
+                    ),
+                  );
+
+                  if (updatedVehicle != null) {
+                    setState(() {
+                      vehicles[index] = Map<String, String>.from(
+                        updatedVehicle,
+                      );
+                      box.put('vehicles', vehicles);
+                    });
+                  }
+                },
+
+                onLongPress: () {
                   setState(() {
-                    vehicles[index] = Map<String, String>.from(updatedVehicle);
+                    vehicles.removeAt(index);
                     box.put('vehicles', vehicles);
                   });
-                }
-              },
-
-              onLongPress: () {
-                setState(() {
-                  vehicles.removeAt(index);
-                  box.put('vehicles', vehicles);
-                });
-              },
+                },
+              ),
             ),
           );
         },
