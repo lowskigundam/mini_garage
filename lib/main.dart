@@ -68,76 +68,110 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
 
-      body: ListView.builder(
-        itemCount: vehicles.length,
-
-        itemBuilder: (context, index) {
-          final v = vehicles[index];
-
-          return Card(
-            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.blue.shade100,
-                  child: Icon(Icons.directions_car, color: Colors.blue),
-                ),
-
-                title: Text(
-                  v['name']!,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-
-                subtitle: Padding(
-                  padding: EdgeInsets.only(top: 4),
-                  child: Text(
-                    '${v['type']} • ${v['price']}',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                  ),
-                ),
-
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.grey,
-                ),
-
-                onTap: () async {
-                  final updatedVehicle = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          AddVehicleScreen(vehicle: vehicles[index]),
-                    ),
-                  );
-
-                  if (updatedVehicle != null) {
-                    setState(() {
-                      vehicles[index] = Map<String, String>.from(
-                        updatedVehicle,
-                      );
-                      box.put('vehicles', vehicles);
-                    });
-                  }
-                },
-
-                onLongPress: () {
-                  setState(() {
-                    vehicles.removeAt(index);
-                    box.put('vehicles', vehicles);
-                  });
-                },
+      body: vehicles.isEmpty
+          ? Center(
+              child: Text(
+                'No vehicles yet 🚗',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
+            )
+          : ListView.builder(
+              padding: EdgeInsets.only(top: 8, bottom: 80),
+
+              itemCount: vehicles.length,
+
+              itemBuilder: (context, index) {
+                final v = vehicles[index];
+                IconData icon;
+
+                if (v['type'] == 'Car') {
+                  icon = Icons.directions_car;
+                } else if (v['type'] == 'Bike') {
+                  icon = Icons.two_wheeler;
+                } else {
+                  icon = Icons.directions;
+                }
+
+                Color color;
+
+                if (v['type'] == 'Car') {
+                  color = Colors.blue;
+                } else if (v['type'] == 'Bike') {
+                  color = Colors.orange;
+                } else {
+                  color = Colors.grey;
+                }
+
+                return Card(
+                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: color.withOpacity(0.2),
+                        child: Icon(icon, color: color),
+                      ),
+
+                      title: Text(
+                        v['name']!,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      subtitle: Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          '${v['type']} • ${v['price']}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+
+                      onTap: () async {
+                        final updatedVehicle = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddVehicleScreen(vehicle: vehicles[index]),
+                          ),
+                        );
+
+                        if (updatedVehicle != null) {
+                          setState(() {
+                            vehicles[index] = Map<String, String>.from(
+                              updatedVehicle,
+                            );
+                            box.put('vehicles', vehicles);
+                          });
+                        }
+                      },
+
+                      onLongPress: () {
+                        setState(() {
+                          vehicles.removeAt(index);
+                          box.put('vehicles', vehicles);
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
