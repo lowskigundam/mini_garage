@@ -13,6 +13,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(title: 'Mini Garage', home: HomeScreen());
@@ -20,6 +22,8 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -51,7 +55,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mini Garage')),
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.blue,
+
+        title: Text(
+          'Mini Garage',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+
+        centerTitle: true,
+      ),
 
       body: ListView.builder(
         itemCount: vehicles.length,
@@ -125,6 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        elevation: 4,
         onPressed: () async {
           // Step B3: Open Add Screen
           final result = await Navigator.push(
@@ -141,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
 
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, size: 28),
       ),
     );
   }

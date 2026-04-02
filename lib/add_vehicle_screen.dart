@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AddVehicleScreen extends StatefulWidget {
   final Map<String, String>? vehicle;
 
-  AddVehicleScreen({this.vehicle});
+  const AddVehicleScreen({super.key, this.vehicle});
 
   @override
   _AddVehicleScreenState createState() => _AddVehicleScreenState();
