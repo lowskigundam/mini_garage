@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'main.dart'; // HomeScreen
 import 'profile_screen.dart';
 import 'add_vehicle_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -11,20 +14,32 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
-  final screens = [HomeScreen(), ProfileScreen()];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[currentIndex],
+      body: currentIndex == 0 ? HomeScreen(key: UniqueKey()) : ProfileScreen(),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddVehicleScreen()),
           );
-          setState(() {}); // refresh after adding
+
+          if (result != null) {
+            final box = Hive.box('vehiclesBox');
+
+            // get current list
+            final List current = box.get('vehicles', defaultValue: []);
+
+            // add new vehicle
+            current.add(result);
+
+            // save back to Hive
+            box.put('vehicles', current);
+          }
+
+          setState(() {}); // rebuild UI
         },
         child: Icon(Icons.add),
       ),
