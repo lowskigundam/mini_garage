@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1001291622113",
+    "project_id": "mini-garage-6adc1",
+    "storage_bucket": "mini-garage-6adc1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001291622113:android:ade0a942ce8e5a40e8b9a0",
+        "android_client_info": {
+          "package_name": "com.ducanh.mini_garage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKtiODKCxtNY0vRX6AvUMT8YCBz-Xg1Ok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

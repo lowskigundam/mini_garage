@@ -1,4 +1,4 @@
-package com.example.mini_garage
+package com.ducanh.mini_garage
 
 import io.flutter.embedding.android.FlutterActivity
 

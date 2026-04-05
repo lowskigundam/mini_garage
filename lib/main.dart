@@ -5,13 +5,18 @@ import 'widgets/vehicle_item.dart';
 import 'main_screen.dart';
 import 'package:provider/provider.dart';
 import 'vehicle_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-
   await Hive.openBox('vehiclesBox');
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  print("🔥 Firebase initialized successfully");
 
   runApp(
     ChangeNotifierProvider(create: (_) => VehicleProvider(), child: MyApp()),

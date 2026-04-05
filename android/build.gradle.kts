@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        google()       // 👈 REQUIRED
+        mavenCentral() // 👈 REQUIRED
+    }
+    dependencies {
+    }
+}
+
 allprojects {
     repositories {
         google()
