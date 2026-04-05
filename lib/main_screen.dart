@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'main.dart'; // HomeScreen
 import 'profile_screen.dart';
 import 'add_vehicle_screen.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import 'vehicle_provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -27,19 +28,13 @@ class _MainScreenState extends State<MainScreen> {
           );
 
           if (result != null) {
-            final box = Hive.box('vehiclesBox');
+            final provider = Provider.of<VehicleProvider>(
+              context,
+              listen: false,
+            );
 
-            // get current list
-            final List current = box.get('vehicles', defaultValue: []);
-
-            // add new vehicle
-            current.add(result);
-
-            // save back to Hive
-            box.put('vehicles', current);
+            provider.addVehicle(result);
           }
-
-          setState(() {}); // rebuild UI
         },
         child: Icon(Icons.add),
       ),

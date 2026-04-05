@@ -3,6 +3,8 @@ import 'add_vehicle_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'widgets/vehicle_item.dart';
 import 'main_screen.dart';
+import 'package:provider/provider.dart';
+import 'vehicle_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +13,9 @@ void main() async {
 
   await Hive.openBox('vehiclesBox');
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (_) => VehicleProvider(), child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,31 +35,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Box box;
-
-  // Step B2: Vehicle list (state)
-  List<Map<String, String>> vehicles = [
-    {'name': 'Toyota Camry', 'type': 'Car', 'price': '\$20000'},
-    {'name': 'Honda Civic', 'type': 'Car', 'price': '\$18000'},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    box = Hive.box('vehiclesBox');
-
-    final savedData = box.get('vehicles');
-
-    if (savedData != null) {
-      vehicles = List<Map<String, String>>.from(
-        (savedData as List).map((item) => Map<String, String>.from(item)),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<VehicleProvider>(context);
+    final vehicles = provider.vehicles;
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -97,19 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
 
                     if (updatedVehicle != null) {
-                      setState(() {
-                        vehicles[index] = Map<String, String>.from(
-                          updatedVehicle,
-                        );
-                        box.put('vehicles', vehicles);
-                      });
+                      provider.updateVehicle(index, updatedVehicle);
                     }
                   },
                   onLongPress: () {
-                    setState(() {
-                      vehicles.removeAt(index);
-                      box.put('vehicles', vehicles);
-                    });
+                    provider.deleteVehicle(index);
                   },
                 );
               },
