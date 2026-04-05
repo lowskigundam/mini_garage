@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'add_vehicle_screen.dart';
+import 'screens/add_vehicle_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'widgets/vehicle_item.dart';
-import 'main_screen.dart';
+import 'screens/main_screen.dart';
 import 'package:provider/provider.dart';
-import 'vehicle_provider.dart';
+import 'providers/vehicle_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
