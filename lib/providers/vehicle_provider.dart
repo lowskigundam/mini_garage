@@ -16,7 +16,7 @@ class VehicleProvider extends ChangeNotifier {
 
     if (savedData != null) {
       vehicles = (savedData as List)
-          .map((item) => Vehicle.fromMap(item))
+          .map((item) => Vehicle.fromMap(Map<String, dynamic>.from(item), ''))
           .toList();
     }
 
