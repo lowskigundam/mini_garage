@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/vehicle.dart';
 
 class VehicleItem extends StatelessWidget {
-  final Map<String, String> vehicle;
+  final Vehicle vehicle;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
 
@@ -15,18 +16,18 @@ class VehicleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     IconData icon;
-    if (vehicle['type'] == 'Car') {
+    if (vehicle.type == 'Car') {
       icon = Icons.directions_car;
-    } else if (vehicle['type'] == 'Bike') {
+    } else if (vehicle.type == 'Bike') {
       icon = Icons.two_wheeler;
     } else {
       icon = Icons.directions;
     }
 
     Color color;
-    if (vehicle['type'] == 'Car') {
+    if (vehicle.type == 'Car') {
       color = Colors.blue;
-    } else if (vehicle['type'] == 'Bike') {
+    } else if (vehicle.type == 'Bike') {
       color = Colors.orange;
     } else {
       color = Colors.grey;
@@ -40,25 +41,21 @@ class VehicleItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 6),
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: color.withValues(alpha: 0.2),
+            backgroundColor: color.withOpacity(0.2),
             child: Icon(icon, color: color),
           ),
-
           title: Text(
-            vehicle['name']!,
+            vehicle.name,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-
           subtitle: Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              '${vehicle['type']} • ${vehicle['price']}',
+              '${vehicle.type} • ${vehicle.price}',
               style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),
           ),
-
           trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-
           onTap: onTap,
           onLongPress: onLongPress,
         ),

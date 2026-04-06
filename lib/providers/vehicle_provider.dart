@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../models/vehicle.dart';
 
 class VehicleProvider extends ChangeNotifier {
-  List<Map<String, String>> vehicles = [];
+  List<Vehicle> vehicles = [];
 
   final Box box = Hive.box('vehiclesBox');
 
@@ -11,32 +12,32 @@ class VehicleProvider extends ChangeNotifier {
   }
 
   void loadVehicles() {
-    final data = box.get('vehicles');
+    final savedData = box.get('vehicles');
 
-    if (data != null) {
-      vehicles = List<Map<String, String>>.from(
-        (data as List).map((item) => Map<String, String>.from(item)),
-      );
+    if (savedData != null) {
+      vehicles = (savedData as List)
+          .map((item) => Vehicle.fromMap(item))
+          .toList();
     }
 
     notifyListeners();
   }
 
-  void addVehicle(Map<String, String> vehicle) {
-    vehicles.add(vehicle);
-    box.put('vehicles', vehicles);
+  void addVehicle(Vehicle v) {
+    vehicles.add(v);
+    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
     notifyListeners();
   }
 
-  void updateVehicle(int index, Map<String, String> vehicle) {
-    vehicles[index] = vehicle;
-    box.put('vehicles', vehicles);
+  void updateVehicle(int index, Vehicle v) {
+    vehicles[index] = v;
+    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
     notifyListeners();
   }
 
   void deleteVehicle(int index) {
     vehicles.removeAt(index);
-    box.put('vehicles', vehicles);
+    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
     notifyListeners();
   }
 }
