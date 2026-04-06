@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../main.dart'; // HomeScreen
 import 'profile_screen.dart';
 import 'add_vehicle_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
+import 'home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
