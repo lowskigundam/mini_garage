@@ -1,43 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../models/vehicle.dart';
+import '../services/firestore_service.dart';
 
 class VehicleProvider extends ChangeNotifier {
+  final FirestoreService _firestoreService = FirestoreService();
+
   List<Vehicle> vehicles = [];
 
-  final Box box = Hive.box('vehiclesBox');
-
   VehicleProvider() {
-    loadVehicles();
+    listenToVehicles();
   }
 
-  void loadVehicles() {
-    final savedData = box.get('vehicles');
-
-    if (savedData != null) {
-      vehicles = (savedData as List)
-          .map((item) => Vehicle.fromMap(Map<String, dynamic>.from(item), ''))
-          .toList();
-    }
-
-    notifyListeners();
+  void listenToVehicles() {
+    _firestoreService.getVehicles().listen((data) {
+      vehicles = data;
+      notifyListeners();
+    });
   }
 
-  void addVehicle(Vehicle v) {
-    vehicles.add(v);
-    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
-    notifyListeners();
+  Future<void> addVehicle(Vehicle v) async {
+    await _firestoreService.addVehicle(v);
   }
 
-  void updateVehicle(int index, Vehicle v) {
-    vehicles[index] = v;
-    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
-    notifyListeners();
+  Future<void> updateVehicle(Vehicle v) async {
+    await _firestoreService.updateVehicle(v.id!, v);
   }
 
-  void deleteVehicle(int index) {
-    vehicles.removeAt(index);
-    box.put('vehicles', vehicles.map((v) => v.toMap()).toList());
-    notifyListeners();
+  Future<void> deleteVehicle(Vehicle v) async {
+    await _firestoreService.deleteVehicle(v.id!);
   }
 }

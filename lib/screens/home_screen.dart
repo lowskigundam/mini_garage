@@ -52,11 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
 
                     if (updatedVehicle != null) {
-                      provider.updateVehicle(index, updatedVehicle);
+                      provider.updateVehicle(updatedVehicle);
                     }
                   },
                   onLongPress: () {
-                    provider.deleteVehicle(index);
+                    provider.deleteVehicle(v);
                   },
                 );
               },

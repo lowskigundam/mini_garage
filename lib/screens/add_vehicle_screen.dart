@@ -52,9 +52,10 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             ElevatedButton(
               onPressed: () {
                 final newVehicle = Vehicle(
+                  id: widget.vehicle?.id,
                   name: nameController.text,
                   type: typeController.text,
-                  price: double.tryParse(priceController.text) ?? 0,
+                  price: double.parse(priceController.text),
                 );
 
                 Navigator.pop(context, newVehicle);
