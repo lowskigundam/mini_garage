@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
-import '../widgets/vehicle_item.dart';
 import 'add_vehicle_screen.dart';
+import '../widgets/vehicle_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final v = vehicles[index];
 
-                return VehicleItem(
+                return VehicleCard(
                   vehicle: v,
                   onTap: () async {
                     final updatedVehicle = await Navigator.push(
