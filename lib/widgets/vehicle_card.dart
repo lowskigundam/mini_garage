@@ -21,7 +21,7 @@ class VehicleCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 3,
+        elevation: 1,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,7 +57,10 @@ class VehicleCard extends StatelessWidget {
                   const SizedBox(height: 4),
 
                   // Subtitle
-                  Text(vehicle.type, style: TextStyle(color: Colors.grey[600])),
+                  Text(
+                    "${vehicle.type} • 2022",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
 
                   const SizedBox(height: 10),
 

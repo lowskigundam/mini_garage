@@ -19,48 +19,98 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.blue,
-        title: const Text(
-          'Mini Garage',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        centerTitle: true,
-      ),
-      body: vehicles.isEmpty
-          ? const Center(
-              child: Text(
-                'No vehicles yet 🚗',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.only(top: 8, bottom: 80),
-              itemCount: vehicles.length,
-              itemBuilder: (context, index) {
-                final v = vehicles[index];
-
-                return VehicleCard(
-                  vehicle: v,
-                  onTap: () async {
-                    final updatedVehicle = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddVehicleScreen(vehicle: v),
+      body: Column(
+        children: [
+          // HEADER
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 40, 16, 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "My Vehicles",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
+                    ),
 
-                    if (updatedVehicle != null) {
-                      provider.updateVehicle(updatedVehicle);
-                    }
-                  },
-                  onLongPress: () {
-                    provider.deleteVehicle(v);
-                  },
-                );
-              },
+                    const SizedBox(height: 4),
+
+                    Text(
+                      "${vehicles.length} vehicles registered",
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+
+                Stack(
+                  children: [
+                    const Icon(Icons.notifications, size: 28),
+
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Text(
+                          "1",
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ),
+
+          // LIST
+          Expanded(
+            child: vehicles.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No vehicles yet 🚗',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    itemCount: vehicles.length,
+                    itemBuilder: (context, index) {
+                      final v = vehicles[index];
+
+                      return VehicleCard(
+                        vehicle: v,
+                        onTap: () async {
+                          final updatedVehicle = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddVehicleScreen(vehicle: v),
+                            ),
+                          );
+
+                          if (updatedVehicle != null) {
+                            provider.updateVehicle(updatedVehicle);
+                          }
+                        },
+                        onLongPress: () {
+                          provider.deleteVehicle(v);
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
