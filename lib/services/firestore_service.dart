@@ -37,4 +37,77 @@ class FirestoreService {
   Future<void> updateVehicle(String docId, Vehicle v) async {
     await _vehicleRef.doc(docId).update(v.toMap());
   }
+
+  // ADD MILEAGE
+  Future<void> addMileage(String vehicleId, double mileage) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .add({'mileage': mileage, 'date': FieldValue.serverTimestamp()});
+  }
+
+  Stream<double?> getLatestMileage(String vehicleId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .orderBy('date', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) return null;
+
+          return (snapshot.docs.first['mileage'] as num).toDouble();
+        });
+  }
+
+  // MILEAGE HISTORY
+  Stream<List<Map<String, dynamic>>> getMileageHistory(String vehicleId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return {'id': doc.id, ...doc.data()};
+          }).toList();
+        });
+  }
+
+  // UPDATE MILEAGE HISTORY
+  Future<void> updateMileage(
+    String vehicleId,
+    String logId,
+    double mileage,
+  ) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .doc(logId)
+        .update({'mileage': mileage});
+  }
+
+  // DELETE MILEAGE HISTORY
+  Future<void> deleteMileage(String vehicleId, String logId) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .doc(logId)
+        .delete();
+  }
 }

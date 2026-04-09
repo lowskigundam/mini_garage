@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import 'add_vehicle_screen.dart';
 import '../widgets/vehicle_card.dart';
+import 'vehicle_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -89,18 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return VehicleCard(
                         vehicle: v,
-                        onTap: () async {
-                          final updatedVehicle = await Navigator.push(
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  AddVehicleScreen(vehicle: v),
+                                  VehicleDetailScreen(vehicle: v),
                             ),
                           );
-
-                          if (updatedVehicle != null) {
-                            provider.updateVehicle(updatedVehicle);
-                          }
                         },
                         onLongPress: () {
                           provider.deleteVehicle(v);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
+import '../services/firestore_service.dart';
 
 class VehicleCard extends StatelessWidget {
   final Vehicle vehicle;
@@ -70,13 +71,35 @@ class VehicleCard extends StatelessWidget {
                       _infoBox(
                         icon: Icons.speed,
                         label: "Mileage",
-                        value: "45,230 km", // temp
+                        value: StreamBuilder<double?>(
+                          stream: FirestoreService().getLatestMileage(
+                            vehicle.id!,
+                          ),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Text(
+                                "No data",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              );
+                            }
+
+                            return Text(
+                              "${snapshot.data!.toInt()} km",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       const SizedBox(width: 10),
                       _infoBox(
                         icon: Icons.local_gas_station,
                         label: "Fuel",
-                        value: "68%", // temp
+                        value: const Text(
+                          "68%",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ), // temp
                       ),
                     ],
                   ),
@@ -100,7 +123,7 @@ class VehicleCard extends StatelessWidget {
   Widget _infoBox({
     required IconData icon,
     required String label,
-    required String value,
+    required Widget value,
   }) {
     return Expanded(
       child: Container(
@@ -120,10 +143,7 @@ class VehicleCard extends StatelessWidget {
                   label,
                   style: const TextStyle(fontSize: 11, color: Colors.grey),
                 ),
-                Text(
-                  value,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                value,
               ],
             ),
           ],
