@@ -18,7 +18,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentIndex == 0 ? HomeScreen(key: UniqueKey()) : ProfileScreen(),
+      body: IndexedStack(
+        index: currentIndex,
+        children: [
+          HomeScreen(),
+          Center(child: Text("Stats coming soon")),
+          Container(), // placeholder for FAB
+          ProfileScreen(),
+        ],
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -36,7 +44,8 @@ class _MainScreenState extends State<MainScreen> {
             provider.addVehicle(result);
           }
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.directions_car),
+        backgroundColor: Colors.black,
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -44,26 +53,47 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              // HOME
+              IconButton(
+                icon: Icon(
+                  Icons.home,
+                  color: currentIndex == 0 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() => currentIndex = 0);
+                },
+              ),
 
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                setState(() => currentIndex = 0);
-              },
-            ),
+              // STATS
+              IconButton(
+                icon: Icon(
+                  Icons.bar_chart,
+                  color: currentIndex == 1 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() => currentIndex = 1);
+                },
+              ),
 
-            SizedBox(width: 40), // space for FAB
+              const SizedBox(width: 40),
 
-            IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                setState(() => currentIndex = 1);
-              },
-            ),
-          ],
+              // PROFILE
+              IconButton(
+                icon: Icon(
+                  Icons.person,
+                  color: currentIndex == 3 ? Colors.black : Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() => currentIndex = 3);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
