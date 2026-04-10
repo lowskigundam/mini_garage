@@ -141,4 +141,17 @@ class FirestoreService {
 
     return (lastMileage - firstMileage) / days;
   }
+
+  // OIL CHANGE
+  Future<double?> getRemainingOilDistance(String vehicleId) async {
+    final latest = await getLatestMileage(vehicleId).first;
+
+    if (latest == null) return null;
+
+    const interval = 10000;
+
+    final remainder = latest % interval;
+
+    return interval - remainder;
+  }
 }

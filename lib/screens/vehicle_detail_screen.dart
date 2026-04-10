@@ -113,6 +113,30 @@ class VehicleDetailScreen extends StatelessWidget {
                   // ✅ SAVE IF VALID
                   await service.addMileage(vehicle.id!, mileage);
 
+                  final remaining = await service.getRemainingOilDistance(
+                    vehicle.id!,
+                  );
+
+                  if (remaining != null && remaining <= 300) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Oil Change Alert"),
+                        content: Text(
+                          remaining <= 0
+                              ? "You need to change oil NOW!"
+                              : "Only ${remaining.toStringAsFixed(0)} km left before oil change",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("OK"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text("Mileage added")));
@@ -153,6 +177,38 @@ class VehicleDetailScreen extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
+                );
+              },
+            ),
+
+            SizedBox(height: 10),
+
+            FutureBuilder<double?>(
+              future: FirestoreService().getRemainingOilDistance(vehicle.id!),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text("Oil: Not enough data");
+                }
+
+                final remaining = snapshot.data!;
+
+                if (remaining <= 0) {
+                  return const Text(
+                    "⚠️ Oil change required NOW",
+                    style: TextStyle(color: Colors.red),
+                  );
+                }
+
+                if (remaining <= 300) {
+                  return Text(
+                    "⚠️ Oil change soon: ${remaining.toStringAsFixed(0)} km left",
+                    style: const TextStyle(color: Colors.orange),
+                  );
+                }
+
+                return Text(
+                  "Oil change in ${remaining.toStringAsFixed(0)} km",
+                  style: const TextStyle(color: Colors.green),
                 );
               },
             ),
