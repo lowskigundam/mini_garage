@@ -108,7 +108,9 @@ class VehicleCard extends StatelessWidget {
 
                   // Bottom text
                   Text(
-                    "Next service: May 15, 2026",
+                    vehicle.nextService != null
+                        ? "Next service: ${vehicle.nextService!.toLocal().toString().split(' ')[0]}"
+                        : "No service scheduled",
                     style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                 ],

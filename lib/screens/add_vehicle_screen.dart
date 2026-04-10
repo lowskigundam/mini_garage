@@ -11,6 +11,28 @@ class AddVehicleScreen extends StatefulWidget {
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
+  DateTime? lastService;
+  DateTime? nextService;
+
+  Future<void> pickDate(BuildContext context, bool isLastService) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isLastService) {
+          lastService = picked;
+        } else {
+          nextService = picked;
+        }
+      });
+    }
+  }
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController typeController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -48,6 +70,29 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               controller: priceController,
               decoration: InputDecoration(labelText: 'Price'),
             ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () => pickDate(context, true),
+              child: Text(
+                lastService == null
+                    ? "Select Last Service Date"
+                    : "Last Service: ${lastService!.toLocal().toString().split(' ')[0]}",
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () => pickDate(context, false),
+              child: Text(
+                nextService == null
+                    ? "Select Next Service Date"
+                    : "Next Service: ${nextService!.toLocal().toString().split(' ')[0]}",
+              ),
+            ),
+
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -56,6 +101,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   name: nameController.text,
                   type: typeController.text,
                   price: double.parse(priceController.text),
+
+                  lastService: lastService,
+                  nextService: nextService,
                 );
 
                 Navigator.pop(context, newVehicle);
