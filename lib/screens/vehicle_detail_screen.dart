@@ -87,10 +87,30 @@ class VehicleDetailScreen extends StatelessWidget {
                 );
 
                 if (result != null) {
-                  final mileage = double.parse(result);
+                  final mileage = double.tryParse(result);
+
+                  if (mileage == null) return;
 
                   final service = FirestoreService();
 
+                  // 🔥 GET CURRENT MILEAGE
+                  final currentMileage = await service
+                      .getLatestMileage(vehicle.id!)
+                      .first;
+
+                  // 🛑 VALIDATION
+                  if (currentMileage != null && mileage < currentMileage) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Mileage cannot be lower than current ($currentMileage km)",
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  // ✅ SAVE IF VALID
                   await service.addMileage(vehicle.id!, mileage);
 
                   ScaffoldMessenger.of(
@@ -114,6 +134,27 @@ class VehicleDetailScreen extends StatelessWidget {
                 );
               },
               child: Text("View History"),
+            ),
+
+            SizedBox(height: 20),
+
+            FutureBuilder<double?>(
+              future: FirestoreService().calculateAverageDailyDistance(
+                vehicle.id!,
+              ),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text("Avg: Not enough data");
+                }
+
+                return Text(
+                  "Avg daily: ${snapshot.data!.toStringAsFixed(1)} km/day",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
             ),
           ],
         ),

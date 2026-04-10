@@ -46,7 +46,7 @@ class FirestoreService {
         .collection('vehicles')
         .doc(vehicleId)
         .collection('mileage_logs')
-        .add({'mileage': mileage, 'date': FieldValue.serverTimestamp()});
+        .add({'mileage': mileage, 'date': DateTime.now()});
   }
 
   Stream<double?> getLatestMileage(String vehicleId) {
@@ -109,5 +109,36 @@ class FirestoreService {
         .collection('mileage_logs')
         .doc(logId)
         .delete();
+  }
+
+  // CALCULATE AVERAGE DAILY DISTANCE
+  Future<double?> calculateAverageDailyDistance(String vehicleId) async {
+    final snapshot = await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('mileage_logs')
+        .orderBy('date')
+        .get();
+
+    if (snapshot.docs.length < 2) return null;
+
+    final first = snapshot.docs.first;
+    final last = snapshot.docs.last;
+
+    final firstMileage = (first['mileage'] as num).toDouble();
+    final lastMileage = (last['mileage'] as num).toDouble();
+
+    final firstDate = (first['date'] as Timestamp).toDate();
+    final lastDate = (last['date'] as Timestamp).toDate();
+
+    final hours = lastDate.difference(firstDate).inHours;
+
+    if (hours <= 0) return null;
+
+    final days = hours / 24;
+
+    return (lastMileage - firstMileage) / days;
   }
 }
