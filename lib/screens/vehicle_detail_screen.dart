@@ -212,6 +212,48 @@ class VehicleDetailScreen extends StatelessWidget {
                 );
               },
             ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () async {
+                final controller = TextEditingController();
+
+                final result = await showDialog(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text("Enter Gas Price"),
+                    content: TextField(
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.pop(dialogContext, controller.text),
+                        child: Text("Save"),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (result != null) {
+                  final price = double.tryParse(result);
+                  if (price == null) return;
+
+                  await FirestoreService().addGas(vehicle.id!, price);
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Gas record added")));
+                }
+              },
+              child: Text("Add Gas Record"),
+            ),
           ],
         ),
       ),

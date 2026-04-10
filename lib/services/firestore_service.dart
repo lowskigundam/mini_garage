@@ -154,4 +154,35 @@ class FirestoreService {
 
     return interval - remainder;
   }
+
+  // GAS TRACKING
+  Future<void> addGas(String vehicleId, double price) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('gas_logs')
+        .add({
+          'price': price,
+          'date': DateTime.now(), // use local like mileage
+        });
+  }
+
+  // GET LATEST GAS
+  Stream<double?> getLatestGas(String vehicleId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('gas_logs')
+        .orderBy('date', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) return null;
+          return (snapshot.docs.first['price'] as num).toDouble();
+        });
+  }
 }

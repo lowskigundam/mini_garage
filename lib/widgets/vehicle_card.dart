@@ -93,13 +93,32 @@ class VehicleCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      _infoBox(
-                        icon: Icons.local_gas_station,
-                        label: "Fuel",
-                        value: const Text(
-                          "68%",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ), // temp
+
+                      StreamBuilder<double?>(
+                        stream: FirestoreService().getLatestGas(vehicle.id!),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return _infoBox(
+                              icon: Icons.local_gas_station,
+                              label: "Gas",
+                              value: const Text(
+                                "--",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }
+
+                          return _infoBox(
+                            icon: Icons.local_gas_station,
+                            label: "Gas",
+                            value: Text(
+                              "${snapshot.data!.toStringAsFixed(0)} đ",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
