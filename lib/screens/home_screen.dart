@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import '../widgets/vehicle_card.dart';
 import 'vehicle_detail_screen.dart';
+import 'notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,26 +48,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
 
-                Stack(
-                  children: [
-                    const Icon(Icons.notifications, size: 28),
-
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Text(
-                          "1",
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
+                // 🔔 NOTIFICATION BUTTON
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationScreen(),
                       ),
-                    ),
-                  ],
+                    );
+                  },
+
+                  child: Stack(
+                    children: [const Icon(Icons.notifications, size: 28)],
+                  ),
                 ),
               ],
             ),
