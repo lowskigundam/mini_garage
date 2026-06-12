@@ -19,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final vehicles = provider.vehicles;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       body: Column(
         children: [
           // HEADER
