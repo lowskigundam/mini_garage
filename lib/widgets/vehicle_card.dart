@@ -73,7 +73,7 @@ class VehicleCard extends StatelessWidget {
 
                   // Subtitle
                   Text(
-                    "${vehicle.type} • 2022",
+                    "${vehicle.type} • ${vehicle.year}",
                     style: TextStyle(color: Colors.grey[600]),
                   ),
 

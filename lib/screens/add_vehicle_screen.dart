@@ -36,6 +36,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController typeController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController yearController = TextEditingController();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (widget.vehicle != null) {
       nameController.text = widget.vehicle!.name;
       typeController.text = widget.vehicle!.type;
+      yearController.text = widget.vehicle!.year.toString();
       priceController.text = widget.vehicle!.price.toString();
     }
   }
@@ -65,6 +67,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             TextField(
               controller: typeController,
               decoration: InputDecoration(labelText: 'Type'),
+            ),
+            TextField(
+              controller: yearController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Manufacture Year'),
             ),
             TextField(
               controller: priceController,
@@ -100,6 +107,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   id: widget.vehicle?.id,
                   name: nameController.text,
                   type: typeController.text,
+                  year: int.parse(yearController.text),
                   price: double.parse(priceController.text),
 
                   lastService: lastService,

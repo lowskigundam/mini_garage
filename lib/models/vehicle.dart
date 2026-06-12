@@ -5,6 +5,7 @@ class Vehicle {
   final String name;
   final String type;
   final double price;
+  final int year;
 
   DateTime? lastService;
   DateTime? nextService;
@@ -14,6 +15,7 @@ class Vehicle {
     required this.name,
     required this.type,
     required this.price,
+    required this.year,
     this.lastService,
     this.nextService,
   });
@@ -24,6 +26,7 @@ class Vehicle {
       'name': name,
       'type': type,
       'price': price,
+      'year': year,
       'lastService': lastService,
       'nextService': nextService,
     };
@@ -35,6 +38,7 @@ class Vehicle {
       id: docId,
       name: map['name'] ?? '',
       type: map['type'] ?? '',
+      year: (map['year'] as num?)?.toInt() ?? 2022,
       price: (map['price'] ?? 0).toDouble(),
 
       lastService: map['lastService'] != null
