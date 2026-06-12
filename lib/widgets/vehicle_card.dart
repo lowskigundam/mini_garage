@@ -14,6 +14,20 @@ class VehicleCard extends StatelessWidget {
     required this.onLongPress,
   });
 
+  IconData getVehicleIcon() {
+    switch (vehicle.type.toLowerCase()) {
+      case 'bike':
+      case 'motorbike':
+        return Icons.two_wheeler;
+
+      case 'car':
+        return Icons.directions_car;
+
+      default:
+        return Icons.help_outline;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -35,8 +49,8 @@ class VehicleCard extends StatelessWidget {
                   top: Radius.circular(16),
                 ),
               ),
-              child: const Center(
-                child: Icon(Icons.directions_car, size: 50, color: Colors.grey),
+              child: Center(
+                child: Icon(getVehicleIcon(), size: 50, color: Colors.grey),
               ),
             ),
 
