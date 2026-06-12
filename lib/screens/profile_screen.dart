@@ -11,29 +11,79 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Profile")),
 
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Logged in as:", style: TextStyle(fontSize: 16)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
 
-            const SizedBox(height: 10),
-
-            Text(
-              user?.email ?? "No email",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        children: [
+          // ACCOUNT CARD
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
 
-            const SizedBox(height: 30),
+            child: ListTile(
+              leading: const Icon(Icons.person),
 
-            ElevatedButton(
-              onPressed: () async {
+              title: const Text(
+                "Account",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+
+              subtitle: Text(user?.email ?? "No email"),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // SETTINGS CARD
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+
+            child: ListTile(
+              leading: const Icon(Icons.settings),
+
+              title: const Text(
+                "Settings",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+
+              subtitle: const Text("Coming soon"),
+
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Settings coming soon")),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // LOGOUT CARD
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+
+            child: ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+
+              title: const Text(
+                "Logout",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              onTap: () async {
                 await FirebaseAuth.instance.signOut();
               },
-              child: const Text("Logout"),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
