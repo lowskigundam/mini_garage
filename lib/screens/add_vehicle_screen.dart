@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   final Vehicle? vehicle;
@@ -13,6 +14,8 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   DateTime? lastService;
   DateTime? nextService;
+
+  String? imagePath;
 
   Future<void> pickDate(BuildContext context, bool isLastService) async {
     final picked = await showDatePicker(
@@ -29,6 +32,18 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         } else {
           nextService = picked;
         }
+      });
+    }
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        imagePath = pickedFile.path;
       });
     }
   }
@@ -100,6 +115,24 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               ),
             ),
 
+            ElevatedButton(
+              onPressed: pickImage,
+              child: const Text("Select Vehicle Image"),
+            ),
+
+            const SizedBox(height: 10),
+
+            if (imagePath != null)
+              const Text(
+                "Image Selected ✓",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+            const SizedBox(height: 20),
+
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -109,6 +142,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   type: typeController.text,
                   year: int.parse(yearController.text),
                   price: double.parse(priceController.text),
+
+                  imagePath: imagePath,
 
                   lastService: lastService,
                   nextService: nextService,

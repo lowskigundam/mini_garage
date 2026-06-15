@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
 import '../services/firestore_service.dart';
+import 'dart:io';
 
 class VehicleCard extends StatelessWidget {
   final Vehicle vehicle;
@@ -49,8 +50,25 @@ class VehicleCard extends StatelessWidget {
                   top: Radius.circular(16),
                 ),
               ),
-              child: Center(
-                child: Icon(getVehicleIcon(), size: 50, color: Colors.grey),
+
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+
+                child: vehicle.imagePath != null
+                    ? Image.file(
+                        File(vehicle.imagePath!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      )
+                    : Center(
+                        child: Icon(
+                          getVehicleIcon(),
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
               ),
             ),
 
