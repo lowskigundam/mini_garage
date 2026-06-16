@@ -53,6 +53,82 @@ class VehicleDetailScreen extends StatelessWidget {
 
             SizedBox(height: 20),
 
+            SizedBox(height: 20),
+
+            Text(
+              vehicle.lastService != null
+                  ? "Last service: ${vehicle.lastService!.toLocal().toString().split(' ')[0]}"
+                  : "No last service",
+            ),
+
+            SizedBox(height: 8),
+
+            Text(
+              vehicle.nextService != null
+                  ? "Next service: ${vehicle.nextService!.toLocal().toString().split(' ')[0]}"
+                  : "No next service scheduled",
+            ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+
+                if (picked != null) {
+                  final updatedVehicle = Vehicle(
+                    id: vehicle.id,
+                    name: vehicle.name,
+                    type: vehicle.type,
+                    year: vehicle.year,
+                    price: vehicle.price,
+                    imagePath: vehicle.imagePath,
+                    lastService: picked,
+                    nextService: vehicle.nextService,
+                  );
+
+                  await provider.updateVehicle(updatedVehicle);
+                }
+              },
+              child: Text("Update Last Service"),
+            ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+
+                if (picked != null) {
+                  final updatedVehicle = Vehicle(
+                    id: vehicle.id,
+                    name: vehicle.name,
+                    type: vehicle.type,
+                    year: vehicle.year,
+                    price: vehicle.price,
+                    imagePath: vehicle.imagePath,
+                    lastService: vehicle.lastService,
+                    nextService: picked,
+                  );
+
+                  await provider.updateVehicle(updatedVehicle);
+                }
+              },
+              child: Text("Update Next Service"),
+            ),
+
+            SizedBox(height: 20),
+
             // 🔥 ACTION BUTTONS
             ElevatedButton(
               onPressed: () async {

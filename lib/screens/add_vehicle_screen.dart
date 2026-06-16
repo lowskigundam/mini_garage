@@ -12,29 +12,7 @@ class AddVehicleScreen extends StatefulWidget {
 }
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
-  DateTime? lastService;
-  DateTime? nextService;
-
   String? imagePath;
-
-  Future<void> pickDate(BuildContext context, bool isLastService) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked != null) {
-      setState(() {
-        if (isLastService) {
-          lastService = picked;
-        } else {
-          nextService = picked;
-        }
-      });
-    }
-  }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -93,28 +71,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               decoration: InputDecoration(labelText: 'Price'),
             ),
 
-            SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: () => pickDate(context, true),
-              child: Text(
-                lastService == null
-                    ? "Select Last Service Date"
-                    : "Last Service: ${lastService!.toLocal().toString().split(' ')[0]}",
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: () => pickDate(context, false),
-              child: Text(
-                nextService == null
-                    ? "Select Next Service Date"
-                    : "Next Service: ${nextService!.toLocal().toString().split(' ')[0]}",
-              ),
-            ),
-
             ElevatedButton(
               onPressed: pickImage,
               child: const Text("Select Vehicle Image"),
@@ -144,9 +100,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   price: double.parse(priceController.text),
 
                   imagePath: imagePath,
-
-                  lastService: lastService,
-                  nextService: nextService,
                 );
 
                 Navigator.pop(context, newVehicle);
