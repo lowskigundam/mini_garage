@@ -215,7 +215,14 @@ class VehicleDetailScreen extends StatelessWidget {
                         return;
                       }
 
-                      await service.addMileage(vehicle.id!, mileage);
+                      await service.addEvent(
+                        Event(
+                          vehicleId: vehicle.id!,
+                          type: "mileage",
+                          value: mileage,
+                          date: DateTime.now(),
+                        ),
+                      );
 
                       ScaffoldMessenger.of(
                         context,

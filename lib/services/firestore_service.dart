@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/vehicle.dart';
+import '../models/event.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -11,9 +12,16 @@ class FirestoreService {
   CollectionReference get _vehicleRef =>
       _db.collection('users').doc(uid).collection('vehicles');
 
+  CollectionReference get _eventRef =>
+      _db.collection('users').doc(uid).collection('events');
+
   // 🔹 ADD VEHICLE
   Future<void> addVehicle(Vehicle v) async {
     await _vehicleRef.add(v.toMap());
+  }
+
+  Future<void> addEvent(Event event) async {
+    await _eventRef.add(event.toMap());
   }
 
   // 🔹 GET VEHICLES (real-time stream)
@@ -26,6 +34,22 @@ class FirestoreService {
         );
       }).toList();
     });
+  }
+
+  // 🔥 GET EVENTS BY VEHICLE
+  Stream<List<Event>> getEventsByVehicle(String vehicleId) {
+    return _eventRef
+        .where('vehicleId', isEqualTo: vehicleId)
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return Event.fromMap(
+              Map<String, dynamic>.from(doc.data() as Map),
+              doc.id,
+            );
+          }).toList();
+        });
   }
 
   // 🔹 DELETE VEHICLE
