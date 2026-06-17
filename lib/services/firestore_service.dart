@@ -209,4 +209,58 @@ class FirestoreService {
           return (snapshot.docs.first['price'] as num).toDouble();
         });
   }
+
+  // ================= SERVICE LOGS =================
+
+  // ADD SERVICE EVENT
+  Future<void> addServiceLog(
+    String vehicleId,
+    String type, // "last" or "next"
+    DateTime date,
+  ) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('service_logs')
+        .add({'type': type, 'date': date, 'createdAt': DateTime.now()});
+  }
+
+  // GET SERVICE HISTORY
+  Stream<List<Map<String, dynamic>>> getServiceHistory(String vehicleId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('service_logs')
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return {'id': doc.id, ...doc.data()};
+          }).toList();
+        });
+  }
+
+  Future<Map<String, dynamic>?> getLatestService(
+    String vehicleId,
+    String type,
+  ) async {
+    final snapshot = await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('service_logs')
+        .where('type', isEqualTo: type)
+        .orderBy('date', descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) return null;
+
+    return snapshot.docs.first.data();
+  }
 }
