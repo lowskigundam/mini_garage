@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import '../services/firestore_service.dart';
 import 'mileage_history_screen.dart';
+import '../models/event.dart';
 
 class VehicleDetailScreen extends StatelessWidget {
   final Vehicle vehicle;
@@ -194,7 +195,14 @@ class VehicleDetailScreen extends StatelessWidget {
                         return;
                       }
 
-                      await service.addMileage(vehicle.id!, mileage);
+                      await service.addEvent(
+                        Event(
+                          vehicleId: vehicle.id!,
+                          type: "mileage",
+                          value: mileage,
+                          date: DateTime.now(),
+                        ),
+                      );
 
                       ScaffoldMessenger.of(
                         context,
