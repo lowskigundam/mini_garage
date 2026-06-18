@@ -158,11 +158,28 @@ class VehicleCard extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Bottom text
-                  Text(
-                    vehicle.nextService != null
-                        ? "Next service: ${vehicle.nextService!.toLocal().toString().split(' ')[0]}"
-                        : "No service scheduled",
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  FutureBuilder<DateTime?>(
+                    future: FirestoreService().getLatestService(
+                      vehicle.id!,
+                      "next",
+                    ),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text(
+                          "No service scheduled",
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                          ),
+                        );
+                      }
+
+                      final date = snapshot.data!;
+                      return Text(
+                        "Next service: ${date.toLocal().toString().split(' ')[0]}",
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      );
+                    },
                   ),
                 ],
               ),

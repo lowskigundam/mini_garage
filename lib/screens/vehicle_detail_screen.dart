@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import '../services/firestore_service.dart';
 import 'mileage_history_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'service_history_screen.dart';
 
 class VehicleDetailScreen extends StatelessWidget {
   final Vehicle vehicle;
@@ -57,18 +59,36 @@ class VehicleDetailScreen extends StatelessWidget {
 
               SizedBox(height: 10),
 
-              Text(
-                vehicle.lastService != null
-                    ? "Last service: ${vehicle.lastService!.toLocal().toString().split(' ')[0]}"
-                    : "No last service",
+              FutureBuilder<DateTime?>(
+                future: FirestoreService().getLatestService(
+                  vehicle.id!,
+                  "last",
+                ),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("No last service");
+                  }
+
+                  final date = snapshot.data!;
+                  return Text("Last service: ${date.toString().split(' ')[0]}");
+                },
               ),
 
               SizedBox(height: 8),
 
-              Text(
-                vehicle.nextService != null
-                    ? "Next service: ${vehicle.nextService!.toLocal().toString().split(' ')[0]}"
-                    : "No next service scheduled",
+              FutureBuilder<DateTime?>(
+                future: FirestoreService().getLatestService(
+                  vehicle.id!,
+                  "next",
+                ),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("No next service scheduled");
+                  }
+
+                  final date = snapshot.data!;
+                  return Text("Next service: ${date.toString().split(' ')[0]}");
+                },
               ),
 
               SizedBox(height: 10),
@@ -85,18 +105,15 @@ class VehicleDetailScreen extends StatelessWidget {
                     );
 
                     if (picked != null) {
-                      final updatedVehicle = Vehicle(
-                        id: vehicle.id,
-                        name: vehicle.name,
-                        type: vehicle.type,
-                        year: vehicle.year,
-                        price: vehicle.price,
-                        imagePath: vehicle.imagePath,
-                        lastService: picked,
-                        nextService: vehicle.nextService,
+                      await FirestoreService().addServiceLog(
+                        vehicle.id!,
+                        "last",
+                        picked,
                       );
 
-                      await provider.updateVehicle(updatedVehicle);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Last service updated")),
+                      );
                     }
                   },
                   child: Text("Update Last Service"),
@@ -117,21 +134,36 @@ class VehicleDetailScreen extends StatelessWidget {
                     );
 
                     if (picked != null) {
-                      final updatedVehicle = Vehicle(
-                        id: vehicle.id,
-                        name: vehicle.name,
-                        type: vehicle.type,
-                        year: vehicle.year,
-                        price: vehicle.price,
-                        imagePath: vehicle.imagePath,
-                        lastService: vehicle.lastService,
-                        nextService: picked,
+                      await FirestoreService().addServiceLog(
+                        vehicle.id!,
+                        "next",
+                        picked,
                       );
 
-                      await provider.updateVehicle(updatedVehicle);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Next service updated")),
+                      );
                     }
                   },
                   child: Text("Update Next Service"),
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            ServiceHistoryScreen(vehicleId: vehicle.id!),
+                      ),
+                    );
+                  },
+                  child: Text("View Service History"),
                 ),
               ),
 
