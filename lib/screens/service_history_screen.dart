@@ -33,15 +33,41 @@ class ServiceHistoryScreen extends StatelessWidget {
               final type = log['type'];
               final date = (log['date'] as Timestamp).toDate();
 
-              return ListTile(
-                leading: Icon(
-                  type == "last" ? Icons.build : Icons.schedule,
-                  color: type == "last" ? Colors.blue : Colors.orange,
+              return Dismissible(
+                key: Key(log['id']), // IMPORTANT: unique key
+
+                direction: DismissDirection.endToStart, // swipe right → left
+                // 🔴 red delete background
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                title: Text(
-                  type == "last" ? "Last Service" : "Next Service Scheduled",
+
+                // 🧠 delete logic
+                onDismissed: (_) async {
+                  await FirestoreService().deleteServiceLog(
+                    vehicleId,
+                    log['id'],
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Service log deleted')),
+                  );
+                },
+
+                // 👇 your ORIGINAL tile goes here
+                child: ListTile(
+                  leading: Icon(
+                    type == "last" ? Icons.build : Icons.schedule,
+                    color: type == "last" ? Colors.blue : Colors.orange,
+                  ),
+                  title: Text(
+                    type == "last" ? "Last Service" : "Next Service Scheduled",
+                  ),
+                  subtitle: Text(date.toLocal().toString().split(' ')[0]),
                 ),
-                subtitle: Text(date.toLocal().toString().split(' ')[0]),
               );
             },
           );

@@ -239,4 +239,15 @@ class FirestoreService {
     final Timestamp timestamp = data['date'];
     return timestamp.toDate(); // ✅ THIS LINE FIXES EVERYTHING
   }
+
+  Future<void> deleteServiceLog(String vehicleId, String logId) async {
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('service_logs')
+        .doc(logId)
+        .delete();
+  }
 }
