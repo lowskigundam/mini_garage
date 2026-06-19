@@ -250,4 +250,20 @@ class FirestoreService {
         .doc(logId)
         .delete();
   }
+
+  Stream<List<Map<String, dynamic>>> getGasHistory(String vehicleId) {
+    return _db
+        .collection('users')
+        .doc(uid) // ✅ FIXED
+        .collection('vehicles')
+        .doc(vehicleId)
+        .collection('gas_logs')
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return {'id': doc.id, ...doc.data()};
+          }).toList();
+        });
+  }
 }

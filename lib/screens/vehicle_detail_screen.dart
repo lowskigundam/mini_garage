@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import '../services/firestore_service.dart';
 import 'mileage_history_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'service_history_screen.dart';
+import 'gas_history_screen.dart';
 
 class VehicleDetailScreen extends StatelessWidget {
   final Vehicle vehicle;
@@ -363,6 +363,24 @@ class VehicleDetailScreen extends StatelessWidget {
                     }
                   },
                   child: Text("Add Gas Record"),
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            GasHistoryScreen(vehicleId: vehicle.id!),
+                      ),
+                    );
+                  },
+                  child: Text("View Gas History"),
                 ),
               ),
             ],
