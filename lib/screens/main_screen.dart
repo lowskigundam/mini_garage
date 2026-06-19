@@ -4,6 +4,7 @@ import 'add_vehicle_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/vehicle_provider.dart';
 import 'home_screen.dart';
+import 'stats_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,6 +16,14 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
+  String getSelectedVehicleId() {
+    final provider = Provider.of<VehicleProvider>(context, listen: false);
+
+    if (provider.vehicles.isEmpty) return "";
+
+    return provider.vehicles.first.id!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
         index: currentIndex,
         children: [
           HomeScreen(),
-          Center(child: Text("Stats coming soon")),
+          StatsScreen(vehicleId: getSelectedVehicleId()),
           Container(), // placeholder for FAB
           ProfileScreen(),
         ],
