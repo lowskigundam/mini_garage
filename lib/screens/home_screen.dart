@@ -4,6 +4,7 @@ import '../providers/vehicle_provider.dart';
 import '../widgets/vehicle_card.dart';
 import 'vehicle_detail_screen.dart';
 import 'notification_screen.dart';
+import '../services/firestore_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,7 +60,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
 
                   child: Stack(
-                    children: [const Icon(Icons.notifications, size: 28)],
+                    children: [
+                      const Icon(Icons.notifications, size: 28),
+
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: FutureBuilder(
+                          future: FirestoreService().getNotifications(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) return const SizedBox();
+
+                            final count = snapshot.data!.length;
+
+                            if (count == 0) return const SizedBox();
+
+                            return Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$count',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

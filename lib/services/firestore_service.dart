@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/vehicle.dart';
+import '../models/app_notification.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -265,5 +266,32 @@ class FirestoreService {
             return {'id': doc.id, ...doc.data()};
           }).toList();
         });
+  }
+
+  Future<List<AppNotification>> getNotifications() async {
+    List<AppNotification> list = [];
+
+    final vehicles = await getVehicles().first;
+
+    for (var v in vehicles) {
+      final nextService = await getLatestService(v.id!, "next");
+
+      if (nextService != null) {
+        final days = nextService.difference(DateTime.now()).inDays;
+
+        if (days < 0) {
+          list.add(AppNotification(title: v.name, message: "Service overdue!"));
+        } else if (days <= 3) {
+          list.add(
+            AppNotification(
+              title: v.name,
+              message: "Service due in $days days",
+            ),
+          );
+        }
+      }
+    }
+
+    return list;
   }
 }
