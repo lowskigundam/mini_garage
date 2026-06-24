@@ -7,6 +7,7 @@ import '../services/firestore_service.dart';
 import 'mileage_history_screen.dart';
 import 'service_history_screen.dart';
 import 'gas_history_screen.dart';
+import 'ocr_odometer_screen.dart';
 
 class VehicleDetailScreen extends StatelessWidget {
   final Vehicle vehicle;
@@ -382,6 +383,16 @@ class VehicleDetailScreen extends StatelessWidget {
                   },
                   child: Text("View Gas History"),
                 ),
+              ),
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => OcrOdometerScreen()),
+                  );
+                },
+                child: Text("Scan Odometer (OCR)"),
               ),
             ],
           ),
