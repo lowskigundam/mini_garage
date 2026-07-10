@@ -184,23 +184,66 @@ class VehicleDetailScreen extends StatelessWidget {
                   onPressed: () async {
                     final controller = TextEditingController();
 
-                    final result = await showDialog(
+                    final result = await showDialog<String>(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text("Enter Mileage"),
-                        content: TextField(
-                          controller: controller,
-                          keyboardType: TextInputType.number,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text("Enter Mileage"),
+
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: controller,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                labelText: "Mileage",
+                                suffixText: "km",
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                icon: const Icon(Icons.document_scanner),
+                                label: const Text("Scan Odometer"),
+                                onPressed: () async {
+                                  final scannedValue =
+                                      await Navigator.push<String>(
+                                        dialogContext,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const OcrOdometerScreen(),
+                                        ),
+                                      );
+
+                                  if (scannedValue != null &&
+                                      scannedValue.trim().isNotEmpty) {
+                                    controller.text = scannedValue.trim();
+
+                                    // Move the cursor to the end of the inserted value.
+                                    controller.selection =
+                                        TextSelection.collapsed(
+                                          offset: controller.text.length,
+                                        );
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text("Cancel"),
+                            onPressed: () => Navigator.pop(dialogContext),
+                            child: const Text("Cancel"),
                           ),
                           TextButton(
-                            onPressed: () =>
-                                Navigator.pop(context, controller.text),
-                            child: Text("Save"),
+                            onPressed: () {
+                              Navigator.pop(dialogContext, controller.text);
+                            },
+                            child: const Text("Save"),
                           ),
                         ],
                       ),
